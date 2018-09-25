@@ -1,4 +1,4 @@
-# Automated Downloading from a Weeb
+# Automated Downloading for a Weeb
 ##### Downloads character searches from https://chunagon.ninjal.ac.jp/chj/search
 
 ##### Required Python Packages:
