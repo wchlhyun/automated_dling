@@ -23,6 +23,7 @@ def main(filename, browser):
 
     for c in characters:
         h.search_term(driver, c)
+    sys.stdout.write("Done. Closing Program.")
 
 if __name__ == "__main__":
     main(args.filename, args.browser)

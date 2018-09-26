@@ -11,18 +11,19 @@ import json
 
 def open_driver(browser):
     options = webdriver.ChromeOptions() 
-    download_dir = currDirectory.replace("\\", "/") + "/downloads"
-    
-    prefs = {'download.default_directory' : download_dir}
-    options.add_experimental_option('prefs', prefs)
+    download_dir = currDirectory + "\\downloads"
     if not browser:
         options.add_argument("--headless")
     driver = webdriver.Chrome(currDirectory + "\\chromedriver_win32\\chromedriver.exe", chrome_options=options)
     driver.get("https://chunagon.ninjal.ac.jp/chj/search")
+    
+    driver.command_executor._commands["send_command"] = ("POST", '/session/$sessionId/chromium/send_command')
+    params = {'cmd': 'Page.setDownloadBehavior', 'params': {'behavior': 'allow', 'downloadPath': download_dir}}
+    driver.execute("send_command", params)
     return driver
 
 def login(driver):
-    sys.stdout.write("logged in\n")
+    sys.stdout.write("logging in")
     
     with open(currDirectory + '\\login.json') as f:
         login_info = json.load(f)
@@ -31,17 +32,28 @@ def login(driver):
     
     login_field = driver.find_element_by_id("username")
     login_field.send_keys(username)
+    sys.stdout.write(".")
+    sys.stdout.flush()
     
     password_field = driver.find_element_by_id("password")
     password_field.send_keys(password)
+    sys.stdout.write(".")
+    sys.stdout.flush()
     
     enter_button = driver.find_element_by_id("submit")
     enter_button.click()
+    sys.stdout.write(".")
+    sys.stdout.flush()
+    sys.stdout.write(".")
+    sys.stdout.flush()
+    sys.stdout.write("logged in\n")
+    sys.stdout.flush()
 
 def move_to_search(driver):
     search_button = driver.find_element_by_id("str-search")
-    search_button.click()
     entire_button = driver.find_element_by_class_name("entire-string")
+    
+    search_button.click()
     entire_button.click()
 
 def search_term(driver, term):
